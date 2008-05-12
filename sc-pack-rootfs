@@ -1,0 +1,64 @@
+#!/bin/sh
+
+#
+# Poor man's cross-shell pack:
+#
+# - allows to set up output filename
+# - does not touch /etc/fstab
+# - does not touch /etc/inittab
+# - does not touch /etc/hostname
+#
+
+set -e
+
+LIBUTILS=/usr/lib/slind-core/libutils.sh
+if [ ! -f "$LIBUTILS" ]; then
+    echo "Error: can't load library $LIBUTILS"
+    exit 1
+fi
+. $LIBUTILS
+
+load_slind_config_common
+
+if [ $# -lt 1 -o $# -gt 2 ]; then
+    echo "Usage: sc-pack-rootfs <arch> [<outfile>]"
+    exit 1
+fi
+
+ARCH="$1"
+
+if [ -z "$2" ]; then
+    OUTPUTDIR=`conf_get_var_strict $SLIND_CONFIG cross-shell chr_tgt_image_dir`
+    OUTFILE="$OUTPUTDIR/rootfs-$ARCH.tar"
+else
+    OUTFILE="$2"
+    if [ "x"`echo $OUTFILE | cut -c1` != "x/" ]; then
+        # make <outfile> absolute
+        OUTFILE=`pwd`/"$OUTFILE"
+    fi
+fi
+
+WHERE="/rootfs-$ARCH"
+
+if [ ! -d "$WHERE" ]; then
+    yell "ERROR: /rootfs-$ARCH does not exist or not a directory"
+    exit 1
+fi
+
+echo "=== pack rootfs ==="
+
+(cd "$WHERE";
+  tar cf "$OUTFILE" \
+    --exclude=debootstrap \
+    --exclude=repo \
+    --exclude=proc \
+    --exclude=dev \
+    --exclude='dev/*' *)
+
+mkdir proc
+tar rf "$OUTFILE" proc
+rmdir proc
+
+tar Af "$OUTFILE" /usr/lib/cross-shell/devs.tar
+
+echo "done!"

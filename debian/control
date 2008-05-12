@@ -1,0 +1,15 @@
+Source: slind-control
+Section: host-tools
+Maintainer: Mikhail Gusarov <dottedmag@dottedmag.net>
+Build-Depends: debhelper (>> 2.0.0)
+Priority: optional
+Standards-Version: 3.6.2
+
+Package: slind-control
+Architecture: all
+Depends: debootstrap, sudo, gawk, slind-core (= 0.3.18)
+Description: SLIND dev-chroot control tools
+ This package includes SLIND tools for rootfs bootstrap and packing.
+ .
+ Those tools have been split from slindctl and cross-shell and intended to be
+ run only in dev-chroot, not on developer's host.

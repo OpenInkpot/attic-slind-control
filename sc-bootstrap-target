@@ -1,0 +1,62 @@
+#!/bin/sh
+
+#
+# Poor man's slindctl bootstrap_target: does not read arch from config file.
+#
+
+set -e
+
+LIBUTILS=/usr/lib/slind-core/libutils.sh
+[ -f "$LIBUTILS" ] || die "can't load $LIBUTILS"
+. $LIBUTILS
+
+load_slind_config_common
+
+# hackaround for the case of non-existing locales
+export LC_ALL=C
+
+# some shells don't export UID variable
+if [ -z "$UID" ]; then
+    UID=`id -u`
+fi
+
+if [ $# -ne 1 ]; then
+    echo "Usage: sc-bootstrap-target <armel>"
+    exit 1
+fi
+
+ARCH="$1"
+
+HOSTARCH=`dpkg --print-architecture`
+if [ -z "$HOSTARCH" ]; then
+    yell "ERROR: can't detect host architecture"
+    exit 1
+fi
+
+if [ ! -d "/rootfs-$HOSTARCH" ]; then
+    yell "ERROR: /rootfs-$HOSTARCH does not exist, unable to perform a cross-bootstrap"
+    yell "ERROR: run sc-bootstrap-host before"
+    exit 1
+fi
+
+if [ -e "/rootfs-$ARCH" ]; then
+    yell "ERROR: /rootfs-$ARCH already exists. Delete it before running sc-bootstrap-target."
+    exit 1
+fi
+
+echo "=== bootstrap target ==="
+
+target_apt=`conf_get_var_relaxed $SLIND_CONFIG target addon_packages`
+
+$ROOT_CMD mkdir -p /rootfs-$ARCH
+$ROOT_CMD chown -R $UID:$UID /rootfs-$ARCH
+
+cross-shell bs $ARCH
+
+if [ -n "$target_apt" ]; then
+    cross-shell sh $ARCH apt-get update
+    cross-shell sh $ARCH apt-get install --yes --force-yes $target_apt
+fi
+
+cross-shell sh $ARCH apt-get clean
+cross-shell pack $ARCH

@@ -1,0 +1,38 @@
+#!/usr/bin/make -f
+
+pkgs := slind-control
+dir_slind-control := debian/slind-control
+dirs := $(dir_slind-control)
+
+clean:
+	dh_testdir
+
+	rm -f debian/substvars build-stamp debian/files
+	rm -rf $(dirs)
+
+build:
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+
+	mkdir -p $(dir_slind-control)/usr/bin
+	install -m755 sc-bootstrap-host $(dir_slind-control)/usr/bin
+	install -m755 sc-bootstrap-target $(dir_slind-control)/usr/bin
+	install -m755 sc-pack-rootfs $(dir_slind-control)/usr/bin
+
+binary-arch: build install
+
+binary-indep: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-arch binary-indep
+
+.PHONY: clean install build binary binary-arch binary-indep
