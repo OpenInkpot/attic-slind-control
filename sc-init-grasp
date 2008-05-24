@@ -1,0 +1,99 @@
+#!/bin/sh
+
+set -e
+
+#
+# Creates grasp repository on specified host.
+#
+
+#
+# Repositories config files are read from ~/.sc/repo-<repository> and
+# /etc/sc/repo-<repository>. Settings from ~/.sc override settings from /etc/sc
+#
+# Default repository name is read from ~/.sc/default-repo and
+# /etc/sc/default-repo. ~/.sc/default-repo has higher priority.
+#
+# Each config file is a shell script, which should set the following variables:
+#
+# REPO_TYPE=ssh (the only type currently supported)
+#
+# Additional settings for 'ssh' type:
+# REPO_SSH_HOST=<host> (optionally in form username@host)
+# REPO_SSH_BASE_DIR=<dir> (absolute path)
+# 
+
+usage() {
+    echo "Usage: sc-init-grasp <name>[@<repository>] [<description>]"
+}
+
+CONF=/etc/sc
+LOCALCONF=$HOME/.sc
+DEFCONF=sc
+
+# --- Functions ---
+
+get_default_repo() {
+    for f in $LOCALCONF $DEFCONF $LOCALCONF; do
+        if [ -f $f/default-repo ]; then
+            REPO=`cat $f/default-repo`
+            return
+        fi
+    done
+    return 1
+}
+
+repo_exists() {
+    REPO=$1
+
+    [ -f $LOCALCONF/repo-$REPO ] && return
+    [ -f $DEFCONF/repo-$REPO ] && return
+    [ -f $CONF/repo-$REPO ] && return
+    return 1
+}
+
+ssh_init_git() {
+    PKGNAME=$1
+    DESCRIPTION=$2
+
+    ssh $REPO_SSH_HOST "cd $REPO_SSH_BASE_DIR && (mkdir sc-init-grasp.$$ && cd sc-init-grasp.$$ && git-init && mv .git ../$PKGNAME.git && cd ../$PKGNAME.git && chmod +x hooks/post-update) || rm -rf sc-init-grasp.$$"
+    ssh $REPO_SSH_HOST "echo $DESCRIPTION > $REPO_SSH_BASE_DIR/$PKGNAME.git/description"
+}
+
+# --- End of functions ---
+
+if [ $# -gt 2 -o $# -lt 1 ]; then
+    usage
+    exit 1
+fi
+
+PKGNAME=$1
+DESCRIPTION=$2
+
+case $PKGNAME in
+    *@*)
+        REPO=`echo $PKGNAME | cut -d@ -f2-`
+        PKGNAME=`echo $PKGNAME | cut -d@ -f1`
+        ;;
+    *)
+        get_default_repo
+        if [ -z "$REPO" ]; then
+            echo "No default repository is specified. Please fill $CONF/default-repo or $LOCALCONF/default-repo."
+        fi
+        ;;
+esac
+
+if ! repo_exists "$REPO"; then
+    echo "Repository $repo does not exist."
+    exit 1
+fi
+
+[ -f $CONF/repo-$REPO ] && . $CONF/repo-$REPO
+[ -f $DEFCONF/repo-$REPO ] && . $DEFCONF/repo-$REPO
+[ -f $LOCALCONF/repo-$REPO ] && . $LOCALCONF/repo-$REPO
+
+if [ x$REPO_TYPE != xssh ]; then
+    echo "Repository type $REPO_TYPE is not implemented"
+    exit 1
+fi
+
+ssh_init_git "$PKGNAME" "$DESCRIPTION"
