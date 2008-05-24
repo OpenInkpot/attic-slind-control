@@ -26,28 +26,25 @@ usage() {
     echo "Usage: sc-init-grasp <name>[@<repository>] [<description>]"
 }
 
-CONF=/etc/sc
-LOCALCONF=$HOME/.sc
-DEFCONF=sc
+CONFIGS="$HOME/.sc sc /etc/sc"
 
 # --- Functions ---
 
 get_default_repo() {
-    for f in $LOCALCONF $DEFCONF $LOCALCONF; do
+    for f in $CONFIGS; do
         if [ -f $f/default-repo ]; then
             REPO=`cat $f/default-repo`
             return
         fi
     done
-    return 1
 }
 
 repo_exists() {
     REPO=$1
 
-    [ -f $LOCALCONF/repo-$REPO ] && return
-    [ -f $DEFCONF/repo-$REPO ] && return
-    [ -f $CONF/repo-$REPO ] && return
+    for i in $CONFIGS; do
+        [ -f $i/repo-$REPO ] && return
+    done
     return 1
 }
 
@@ -77,19 +74,20 @@ case $PKGNAME in
     *)
         get_default_repo
         if [ -z "$REPO" ]; then
-            echo "No default repository is specified. Please fill $CONF/default-repo or $LOCALCONF/default-repo."
+            echo "No default repository is specified. Please fill /etc/sc/default-repo or ~/.sc/default-repo."
+            exit 1
         fi
         ;;
 esac
 
 if ! repo_exists "$REPO"; then
-    echo "Repository $repo does not exist."
+    echo "Repository $REPO does not exist."
     exit 1
 fi
 
-[ -f $CONF/repo-$REPO ] && . $CONF/repo-$REPO
-[ -f $DEFCONF/repo-$REPO ] && . $DEFCONF/repo-$REPO
-[ -f $LOCALCONF/repo-$REPO ] && . $LOCALCONF/repo-$REPO
+for i in $CONFIGS; do
+    [ -f $i/repo-$REPO ] && . $i/repo-$REPO
+done
 
 if [ x$REPO_TYPE != xssh ]; then
     echo "Repository type $REPO_TYPE is not implemented"
