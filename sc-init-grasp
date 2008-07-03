@@ -58,8 +58,7 @@ ssh_init_git() {
     fi
 
     TMPDIR=sc-init-grasp.$$
-    ssh $REPO_SSH_HOST "cd $REPO_SSH_BASE_DIR && (mkdir $TMPDIR && cd $TMPDIR && git-init -q && mv .git ../$PKGNAME.git && cd ../$PKGNAME.git && chmod +x hooks/post-update); rm -rf $REPO_SSH_BASE_DIR/$TMPDIR"
-    ssh $REPO_SSH_HOST "echo $DESCRIPTION > $REPO_SSH_BASE_DIR/$PKGNAME.git/description"
+    ssh $REPO_SSH_HOST "cd $REPO_SSH_BASE_DIR && (mkdir $TMPDIR && cd $TMPDIR && git-init -q && mv .git ../$PKGNAME.git && cd ../$PKGNAME.git && chmod +x hooks/post-update && echo $DESCRIPTION > description); rm -rf $REPO_SSH_BASE_DIR/$TMPDIR"
 }
 
 # --- End of functions ---
