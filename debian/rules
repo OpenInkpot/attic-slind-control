@@ -10,6 +10,8 @@ clean:
 	rm -f debian/substvars build-stamp debian/files
 	rm -rf $(dirs)
 
+	dh_clean
+
 build:
 
 install: build
