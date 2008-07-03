@@ -23,7 +23,7 @@ set -e
 # 
 
 usage() {
-    echo "Usage: sc-init-grasp <name>[@<repository>] [<description>]"
+    echo "Usage: sc-init-grasp [--dont-checkout] <name>[@<repository>] [<description>]"
 }
 
 CONFIGS="$HOME/.sc sc /etc/sc"
@@ -61,7 +61,25 @@ ssh_init_git() {
     ssh $REPO_SSH_HOST "cd $REPO_SSH_BASE_DIR && (mkdir $TMPDIR && cd $TMPDIR && git-init -q && mv .git ../$PKGNAME.git && cd ../$PKGNAME.git && chmod +x hooks/post-update && echo $DESCRIPTION > description); rm -rf $REPO_SSH_BASE_DIR/$TMPDIR"
 }
 
+ssh_checkout_git() {
+    PKGNAME=$1
+
+    mkdir $PKGNAME
+    (cd $PKGNAME && git-init -q && git-remote add origin "ssh://$REPO_SSH_HOST$REPO_SSH_BASE_DIR/$PKGNAME.git")
+
+    echo "Empty git repository has been created in '$PKGNAME' directory with tracked"
+    echo "remote repository 'origin'. First push to remote repository should"
+    echo "create branch 'master' in it. Use 'git push origin master' command."
+}
+
 # --- End of functions ---
+
+do_checkout=1
+
+if [ "x$1" == "x--dont-checkout" ]; then
+    do_checkout=0
+    shift
+fi
 
 if [ $# -gt 2 -o $# -lt 1 ]; then
     usage
@@ -75,6 +93,10 @@ case $PKGNAME in
     *@*)
         REPO=`echo $PKGNAME | cut -d@ -f2-`
         PKGNAME=`echo $PKGNAME | cut -d@ -f1`
+        ;;
+    --*)
+        usage
+        exit 1
         ;;
     *)
         get_default_repo
@@ -100,3 +122,7 @@ if [ x$REPO_TYPE != xssh ]; then
 fi
 
 ssh_init_git "$PKGNAME" "$DESCRIPTION"
+
+if [ $do_checkout == "1" ]; then
+    ssh_checkout_git "$PKGNAME"
+fi
