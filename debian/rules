@@ -18,9 +18,13 @@ install: build
 	dh_clean -k
 
 	mkdir -p $(dir_slind-control)/usr/bin
+	mkdir -p $(dir_slind-control)/etc
+
 	install -m755 sc-bootstrap-host $(dir_slind-control)/usr/bin
 	install -m755 sc-bootstrap-target $(dir_slind-control)/usr/bin
 	install -m755 sc-pack-rootfs $(dir_slind-control)/usr/bin
+	install -m755 sc-init-grasp $(dir_slind-control)/usr/bin
+	cp -R sc $(dir_slind-control)/etc
 
 binary-arch: build install
 
