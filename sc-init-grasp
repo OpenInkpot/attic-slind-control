@@ -52,6 +52,11 @@ ssh_init_git() {
     PKGNAME=$1
     DESCRIPTION=$2
 
+    if ssh $REPO_SSH_HOST "test -d $REPO_SSH_BASE_DIR/$PKGNAME.git"; then
+        echo "$PKGNAME already exists. Bailing out."
+        return 1
+    fi
+
     TMPDIR=sc-init-grasp.$$
     ssh $REPO_SSH_HOST "cd $REPO_SSH_BASE_DIR && (mkdir $TMPDIR && cd $TMPDIR && git-init && mv .git ../$PKGNAME.git && cd ../$PKGNAME.git && chmod +x hooks/post-update) || rm -rf $TMPDIR"
     ssh $REPO_SSH_HOST "echo $DESCRIPTION > $REPO_SSH_BASE_DIR/$PKGNAME.git/description"
