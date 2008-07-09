@@ -1,3 +1,12 @@
+slind-control (0.4) UNRELEASED; urgency=low
+
+  * sc-bootstrap-target should not pack rootfs: it's usleless.
+  * sc-pack-rootfs:
+    - by default only pack /dev/console and /dev/null,
+    - --full-devs option, restoring backward-compatible behavior.
+
+ -- Mikhail Gusarov <dottedmag@dottedmag.net>  Thu, 10 Jul 2008 04:02:58 +0700
+
 slind-control (0.3) unstable; urgency=low
 
   * Section changed to host-tools.
