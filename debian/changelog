@@ -1,4 +1,4 @@
-slind-control (0.4) UNRELEASED; urgency=low
+slind-control (0.4) unstable; urgency=low
 
   * sc-bootstrap-target should not pack rootfs: it's usleless.
   * sc-pack-rootfs:
