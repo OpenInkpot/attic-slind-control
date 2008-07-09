@@ -11,6 +11,11 @@
 
 set -e
 
+usage() {
+    echo "Usage: sc-pack-rootfs [--full-dev] <arch> [<outfile>]"
+    exit 1
+}
+
 LIBUTILS=/usr/lib/slind-core/libutils.sh
 if [ ! -f "$LIBUTILS" ]; then
     echo "Error: can't load library $LIBUTILS"
@@ -20,9 +25,17 @@ fi
 
 load_slind_config_common
 
+case "$1" in
+    "--full-dev")
+        full_dev=1
+        shift
+        ;;
+    "--*")
+        usage
+esac
+
 if [ $# -lt 1 -o $# -gt 2 ]; then
-    echo "Usage: sc-pack-rootfs <arch> [<outfile>]"
-    exit 1
+    usage
 fi
 
 ARCH="$1"
@@ -59,6 +72,10 @@ mkdir proc
 tar rf "$OUTFILE" proc
 rmdir proc
 
-tar Af "$OUTFILE" /usr/lib/cross-shell/devs.tar
+if [ -n "$full_dev" ]; then
+    tar Af "$OUTFILE" /usr/lib/cross-shell/devs.tar
+else
+    tar Af "$OUTFILE" /usr/lib/slind-control/min-devs.tar
+fi
 
 echo "done!"

@@ -19,13 +19,15 @@ install: build
 	dh_testroot
 	dh_clean -k
 
-	mkdir -p $(dir_slind-control)/usr/bin
 	mkdir -p $(dir_slind-control)/etc
+	mkdir -p $(dir_slind-control)/usr/bin
+	mkdir -p $(dir_slind-control)/usr/lib/slind-control
 
 	install -m755 sc-bootstrap-host $(dir_slind-control)/usr/bin
 	install -m755 sc-bootstrap-target $(dir_slind-control)/usr/bin
 	install -m755 sc-pack-rootfs $(dir_slind-control)/usr/bin
 	install -m755 sc-init-grasp $(dir_slind-control)/usr/bin
+	install -m644 min-devs.tar $(dir_slind-control)/usr/lib/slind-control
 	cp -R sc $(dir_slind-control)/etc
 
 binary-arch: build install
