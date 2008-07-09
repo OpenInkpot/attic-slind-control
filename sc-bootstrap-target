@@ -59,4 +59,3 @@ if [ -n "$target_apt" ]; then
 fi
 
 cross-shell sh $ARCH apt-get clean
-cross-shell pack $ARCH
