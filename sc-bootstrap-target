@@ -21,7 +21,7 @@ if [ -z "$UID" ]; then
 fi
 
 if [ $# -ne 1 ]; then
-    echo "Usage: sc-bootstrap-target <armel>"
+    echo "Usage: sc-bootstrap-target <arch>"
     exit 1
 fi
 
