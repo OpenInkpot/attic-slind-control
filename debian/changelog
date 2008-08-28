@@ -1,3 +1,11 @@
+slind-control (0.5) unstable; urgency=low
+
+  * Enabled mount-binding of rootfs APT cache directories to devenv one,
+    enabling caching.
+  * Fixed wrong sc-bootstrap-target usage help
+
+ -- Mikhail Gusarov <dottedmag@dottedmag.net>  Fri, 29 Aug 2008 05:16:40 +0700
+
 slind-control (0.4) unstable; urgency=low
 
   * sc-bootstrap-target should not pack rootfs: it's usleless.
