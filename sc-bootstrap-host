@@ -36,7 +36,11 @@ fi
 
 echo "=== bootstrap host ==="
 
+ARCHIVES=/var/cache/apt/archives
+
 $ROOT_CMD mkdir -p $ROOTFS
+$ROOT_CMD mkdir -p $ROOTFS$ARCHIVES
+$ROOT_CMD mount --bind $ARCHIVES $ROOTFS$ARCHIVES
 $ROOT_CMD debootstrap --components=core $SLIND_SUITE $ROOTFS $SLIND_MIRROR $DEBOOTSTRAP_SCRIPT
 
 # suid ldconfig binary, otherwise we won't be able to run it as build user

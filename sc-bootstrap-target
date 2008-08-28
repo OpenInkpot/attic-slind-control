@@ -39,8 +39,10 @@ if [ ! -d "/rootfs-$HOSTARCH" ]; then
     exit 1
 fi
 
-if [ -e "/rootfs-$ARCH" ]; then
-    yell "ERROR: /rootfs-$ARCH already exists. Delete it before running sc-bootstrap-target."
+ROOTFS=/rootfs-$ARCH
+
+if [ -e "$ROOTFS" ]; then
+    yell "ERROR: $ROOTFS already exists. Delete it before running sc-bootstrap-target."
     exit 1
 fi
 
@@ -48,8 +50,12 @@ echo "=== bootstrap target ==="
 
 target_apt=`conf_get_var_relaxed $SLIND_CONFIG target addon_packages`
 
-$ROOT_CMD mkdir -p /rootfs-$ARCH
-$ROOT_CMD chown -R $UID:$UID /rootfs-$ARCH
+$ROOT_CMD mkdir -p $ROOTFS
+$ROOT_CMD chown -R $UID:$UID $ROOTFS
+
+ARCHIVES=/var/cache/apt/archives
+$ROOT_CMD mkdir -p $ROOTFS$ARCHIVES
+$ROOT_CMD mount --bind $ARCHIVES $ROOTFS$ARCHIVES
 
 cross-shell bs $ARCH
 

@@ -66,6 +66,8 @@ echo "=== pack rootfs ==="
     --exclude=repo \
     --exclude=proc \
     --exclude=dev \
+    --exclude='var/cache/apt/archives/*.deb'
+    --exclude='var/cache/apt/archives/partial/*.deb'
     --exclude='dev/*' *)
 
 mkdir proc
