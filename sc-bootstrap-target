@@ -7,7 +7,7 @@
 set -e
 
 try_bind_mount() {
-    $ROOT_CMD "fgrep -q $2 < /etc/mtab || mount --bind $1 $2"
+    $ROOT_CMD sh -c "fgrep -q $2 < /etc/mtab || mount --bind $1 $2"
 }
 
 LIBUTILS=/usr/lib/slind-core/libutils.sh
