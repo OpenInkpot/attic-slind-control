@@ -58,8 +58,9 @@ $ROOT_CMD mkdir -p $ROOTFS
 $ROOT_CMD chown -R $UID:$UID $ROOTFS
 
 ARCHIVES=/var/cache/apt/archives
-$ROOT_CMD mkdir -p $ROOTFS$ARCHIVES
-try_bind_mount "$ARCHIVES" "$ROOTFS$ARCHIVES"
+mkdir -p $ROOTFS$ARCHIVES
+mkdir -p $HOME/apt
+try_bind_mount "$HOME/apt" "$ROOTFS$ARCHIVES"
 
 cross-shell bs $ARCH
 
