@@ -69,4 +69,4 @@ if [ -n "$target_apt" ]; then
     cross-shell sh $ARCH apt-get install --yes --force-yes $target_apt
 fi
 
-cross-shell sh $ARCH apt-get clean
+
