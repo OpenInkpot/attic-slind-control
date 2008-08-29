@@ -6,6 +6,10 @@
 
 set -e
 
+try_bind_mount() {
+    $ROOT_CMD "fgrep -q $2 < /etc/mtab || mount --bind $1 $2"
+}
+
 LIBUTILS=/usr/lib/slind-core/libutils.sh
 [ -f "$LIBUTILS" ] || die "can't load $LIBUTILS"
 . $LIBUTILS
@@ -55,7 +59,7 @@ $ROOT_CMD chown -R $UID:$UID $ROOTFS
 
 ARCHIVES=/var/cache/apt/archives
 $ROOT_CMD mkdir -p $ROOTFS$ARCHIVES
-$ROOT_CMD mount --bind $ARCHIVES $ROOTFS$ARCHIVES
+try_bind_mount "$ARCHIVES" "$ROOTFS$ARCHIVES"
 
 cross-shell bs $ARCH
 
