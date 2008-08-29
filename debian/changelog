@@ -1,3 +1,11 @@
+slind-control (0.5.1) unstable; urgency=low
+
+  * APT cache dir for rootfs-$TARGET moved to proper place
+  * Fixed broken sc-bootstrap-*
+  * Relaxed slind-core dependency
+
+ -- Mikhail Gusarov <dottedmag@dottedmag.net>  Fri, 29 Aug 2008 19:10:29 +0700
+
 slind-control (0.5) unstable; urgency=low
 
   * Enabled mount-binding of rootfs APT cache directories to devenv one,
