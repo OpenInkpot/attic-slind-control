@@ -1,3 +1,9 @@
+slind-control (0.5.3) unstable; urgency=low
+
+  * Fixed broken sc-pack-rootfs (bug #78)
+
+ -- Mikhail Gusarov <dottedmag@dottedmag.net>  Sun, 31 Aug 2008 12:39:49 +0700
+
 slind-control (0.5.2) unstable; urgency=low
 
   * Avoid cleaning APT cache upon completion - it is now valuable shared
