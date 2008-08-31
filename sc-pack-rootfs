@@ -64,11 +64,12 @@ echo "=== pack rootfs ==="
   tar cf "$OUTFILE" \
     --exclude=debootstrap \
     --exclude=repo \
-    --exclude=proc \
-    --exclude=dev \
-    --exclude='var/cache/apt/archives/*.deb'
-    --exclude='var/cache/apt/archives/partial/*.deb'
-    --exclude='dev/*' *)
+    --exclude='proc/*' \
+    --exclude='dev/*' \
+    --exclude='var/cache/apt/archives/*.deb' \
+    --exclude='var/cache/apt/archives/partial/*.deb' \
+    *
+)
 
 mkdir proc
 tar rf "$OUTFILE" proc
