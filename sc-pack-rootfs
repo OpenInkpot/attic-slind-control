@@ -68,11 +68,12 @@ echo "=== pack rootfs ==="
     --exclude='dev/*' \
     --exclude='var/cache/apt/archives/*.deb' \
     --exclude='var/cache/apt/archives/partial/*.deb' \
+    --owner root --group root \
     *
 )
 
 mkdir proc
-tar rf "$OUTFILE" proc
+tar rf "$OUTFILE" --owner root --group root proc
 rmdir proc
 
 if [ -n "$full_dev" ]; then
