@@ -2,7 +2,7 @@ slind-control (0.5.4) UNRELEASED; urgency=low
 
   * Temporarily force all files packed by sc-pack-rootfs to be root:root
     owned. Proper fix will follow and will include saving and restoring
-    fakeroot state.
+    fakeroot state (bug #83).
 
  -- Mikhail Gusarov <dottedmag@dottedmag.net>  Sat, 20 Sep 2008 16:13:15 +0700
 
