@@ -7,7 +7,7 @@ Standards-Version: 3.6.2
 
 Package: slind-control
 Architecture: all
-Depends: debootstrap, sudo, gawk, cross-shell (>= 0.2.1.oi2)
+Depends: sudo, gawk, cross-shell (>= 0.2.1.oi2)
 Conflicts: slind-core
 Provides: slind-core
 Description: SLIND dev-chroot control tools
