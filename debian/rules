@@ -1,15 +1,7 @@
 #!/usr/bin/make -f
 
-pkgs := slind-control
-dir_slind-control := debian/slind-control
-dirs := $(dir_slind-control)
-
 clean:
 	dh_testdir
-
-	rm -f debian/substvars build-stamp debian/files
-	rm -rf $(dirs)
-
 	dh_clean
 
 build:
@@ -19,25 +11,20 @@ install: build
 	dh_testroot
 	dh_clean -k
 
-	mkdir -p $(dir_slind-control)/etc
-	mkdir -p $(dir_slind-control)/usr/bin
-	mkdir -p $(dir_slind-control)/usr/lib/slind-control
-
-	install -m755 sc-bootstrap-host $(dir_slind-control)/usr/bin
-	install -m755 sc-bootstrap-target $(dir_slind-control)/usr/bin
-	install -m755 sc-pack-rootfs $(dir_slind-control)/usr/bin
-	install -m755 sc-init-grasp $(dir_slind-control)/usr/bin
-	install -m644 min-devs.tar $(dir_slind-control)/usr/lib/slind-control
-	cp -R sc $(dir_slind-control)/etc
+	dh_installdirs
+	dh_install
 
 binary-arch: build install
 
 binary-indep: build install
 	dh_testdir
 	dh_testroot
-	dh_installchangelogs
+
 	dh_installdocs
+	dh_installchangelogs
+	dh_link
 	dh_compress
+	dh_fixperms
 	dh_installdeb
 	dh_gencontrol
 	dh_md5sums

@@ -16,15 +16,6 @@ usage() {
     exit 1
 }
 
-LIBUTILS=/usr/lib/slind-core/libutils.sh
-if [ ! -f "$LIBUTILS" ]; then
-    echo "Error: can't load library $LIBUTILS"
-    exit 1
-fi
-. $LIBUTILS
-
-load_slind_config_common
-
 case "$1" in
     "--full-dev")
         full_dev=1
@@ -41,8 +32,7 @@ fi
 ARCH="$1"
 
 if [ -z "$2" ]; then
-    OUTPUTDIR=`conf_get_var_strict $SLIND_CONFIG cross-shell chr_tgt_image_dir`
-    OUTFILE="$OUTPUTDIR/rootfs-$ARCH.tar"
+    OUTFILE="/build/rootfs-$ARCH.tar"
 else
     OUTFILE="$2"
     if [ "x"`echo $OUTFILE | cut -c1` != "x/" ]; then
@@ -77,7 +67,7 @@ tar rf "$OUTFILE" --owner root --group root proc
 rmdir proc
 
 if [ -n "$full_dev" ]; then
-    tar Af "$OUTFILE" /usr/lib/cross-shell/devs.tar
+    tar Af "$OUTFILE" /usr/lib/slind-control/devs.tar
 else
     tar Af "$OUTFILE" /usr/lib/slind-control/min-devs.tar
 fi

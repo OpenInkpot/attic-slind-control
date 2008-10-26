@@ -1,13 +1,14 @@
-slind-control is
+slind-control - Slind control tools.
 
-(c) 2008 Mikhail Gusarov <dottedmag@dottedmag.net>
+Authors:
 
-based on slindctl & cross-shell
+  Mikhail Gusarov <dottedmag@dottedmag.net>
 
-(c) 2007 Alexander Shishkin <virtuoso@slind.org>
-(c) 2007 Wartan Hachaturow <wart@slind.org>
-(c) 2007 Dmitry Baryshkov <dbaryshkov@gmail.com>
-(c) 2007 Maxim Osipov <maxim.osipov@siemens.com>
+Copyright holders:
+
+  © 2008 Mikhail Gusarov <dottedmag@dottedmag.net>
+
+License:
 
    This package is free software; you can redistribute it and/or modify it under
    the terms of the GNU General Public License as published by the Free Software

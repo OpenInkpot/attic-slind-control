@@ -1,51 +1,32 @@
-#!/bin/sh
+#!/bin/sh -e
 
-#
-# Poor man's slindctl bootstrap_host
-#
+. /etc/cross-shell/config
 
-set -e
-
-try_bind_mount() {
-    $ROOT_CMD sh -c "fgrep -q $2 < /etc/mtab || mount --bind $1 $2"
-}
+if [ $# -ne 0 ]; then
+    echo "Usage: sc-bootstrap-host"
+    exit 1
+fi
 
 # for debootstrap
 PATH=$PATH:/usr/sbin
 
-LIBUTILS=/usr/lib/slind-core/libutils.sh
-[ -f "$LIBUTILS" ] || die "can't load $LIBUTILS"
-. $LIBUTILS
-
-load_slind_config_common
-
 HOSTARCH=`dpkg --print-architecture`
 if [ -z "$HOSTARCH" ]; then
-    yell "ERROR: can't detect host architecture"
+    echo "ERROR: can't detect host architecture"
     exit 1
 fi
 
 ROOTFS="/rootfs-$HOSTARCH"
 if [ -e "$ROOTFS" ]; then
-    yell "ERROR: $ROOTFS already exists. Delete it before running sc-bootstrap-host."
-    exit 1
-fi
-
-DEBOOTSTRAP_SCRIPT=/usr/lib/slind-core/debootstrap/$SLIND_SUITE
-
-if [ ! -f $DEBOOTSTRAP_SCRIPT ]; then
-    yell "ERROR: can't find debootstrap script for $SLIND_SUITE at $DEBOOTSTRAP_SCRIPT"
+    echo "ERROR: $ROOTFS already exists. Delete it before running sc-bootstrap-host."
     exit 1
 fi
 
 echo "=== bootstrap host ==="
 
-ARCHIVES=/var/cache/apt/archives
-
 $ROOT_CMD mkdir -p $ROOTFS
-$ROOT_CMD mkdir -p $ROOTFS$ARCHIVES
-try_bind_mount "$ARCHIVES" "$ROOTFS$ARCHIVES"
-$ROOT_CMD debootstrap --components=core $SLIND_SUITE $ROOTFS $SLIND_MIRROR $DEBOOTSTRAP_SCRIPT
+
+cross-bs $HOSTARCH
 
 # suid ldconfig binary, otherwise we won't be able to run it as build user
 # inside chroot.

@@ -1,10 +1,17 @@
-slind-control (0.5.4) UNRELEASED; urgency=low
+slind-control (0.5.4) asimov; urgency=low
 
   * Temporarily force all files packed by sc-pack-rootfs to be root:root
     owned. Proper fix will follow and will include saving and restoring
     fakeroot state (bug #83).
+  * Major overhaul of slind-control, slind-core, cross-shell:
+    - Use of /etc/slind is removed,
+    - Using /etc/cross-shell/config config file,
+    - Added conflict to slind-core,
+    - devs.tar moved to slind-control,
+    - Added cross-shell dependency.
+  * Obsolete sc-init-grasp removed.
 
- -- Mikhail Gusarov <dottedmag@dottedmag.net>  Sat, 20 Sep 2008 16:13:15 +0700
+ -- Mikhail Gusarov <dottedmag@dottedmag.net>  Mon, 27 Oct 2008 03:38:29 +0600
 
 slind-control (0.5.3) unstable; urgency=low
 
