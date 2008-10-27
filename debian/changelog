@@ -1,3 +1,9 @@
+slind-control (0.5.5) asimov; urgency=low
+
+  * Added sc-pack-rootfs which is missing from 0.5.4.
+
+ -- Mikhail Gusarov <dottedmag@dottedmag.net>  Mon, 27 Oct 2008 14:10:46 +0600
+
 slind-control (0.5.4) asimov; urgency=low
 
   * Temporarily force all files packed by sc-pack-rootfs to be root:root

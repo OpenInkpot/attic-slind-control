@@ -1,4 +1,5 @@
 sc-bootstrap-host usr/bin
 sc-bootstrap-target usr/bin
+sc-pack-rootfs usr/bin
 devs.tar usr/lib/slind-control
 min-devs.tar usr/lib/slind-control
